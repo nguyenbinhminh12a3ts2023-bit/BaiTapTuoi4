@@ -104,7 +104,7 @@ class ProfileApp extends StatelessWidget {
       title: 'Profile',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF6F8FC),
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
         textTheme: GoogleFonts.plusJakartaSansTextTheme(
           Theme.of(context).textTheme,
         ),
@@ -121,14 +121,14 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8FC),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 440),
+            constraints: const BoxConstraints(maxWidth: 390),
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -139,13 +139,13 @@ class ProfileScreen extends StatelessWidget {
                   _buildUserInfoSection(),
                   const SizedBox(height: 24),
                   _buildStatsCard(),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                   _buildAboutMeSection(),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                   _buildSkillsSection(),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                   _buildFeaturedProjectsSection(),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                   _buildContactCard(),
                   const SizedBox(height: 32),
                 ],
@@ -157,11 +157,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // 1. TopBar (Row: MainAxisAlignment.spaceBetween)
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildCircleButton(
+        _buildIconButton(
           icon: Icons.chevron_left_rounded,
           onTap: () {},
         ),
@@ -173,7 +174,7 @@ class ProfileScreen extends StatelessWidget {
             color: const Color(0xFF0F172A),
           ),
         ),
-        _buildCircleButton(
+        _buildIconButton(
           icon: Icons.share_outlined,
           onTap: () {},
         ),
@@ -181,7 +182,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleButton({
+  Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onTap,
   }) {
@@ -190,7 +191,7 @@ class ProfileScreen extends StatelessWidget {
       height: 42,
       decoration: BoxDecoration(
         color: Colors.white,
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
         boxShadow: const [
           BoxShadow(
@@ -210,34 +211,46 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // 2. Profile Header (Column: CrossAxisAlignment.center)
   Widget _buildAvatarSection() {
-    return Stack(
-      alignment: Alignment.bottomRight,
-      children: [
-        Container(
-          width: 140,
-          height: 140,
-          padding: const EdgeInsets.all(4.5),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFFF7A00),
-                Color(0xFFFF4D8D),
-                Color(0xFF8B5CF6),
-                Color(0xFF38BDF8),
-              ],
+    return SizedBox(
+      width: 140,
+      height: 140,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Container (Gradient Ring: 140x140 | #FFB088 -> #FF8080 -> ...)
+          Container(
+            width: 140,
+            height: 140,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFFFB088),
+                  Color(0xFFFF8080),
+                  Color(0xFF8B5CF6),
+                  Color(0xFF38BDF8),
+                ],
+              ),
             ),
           ),
-          child: Container(
-            padding: const EdgeInsets.all(3.5),
+          // Container (White Border: 132x132)
+          Container(
+            width: 132,
+            height: 132,
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: ClipOval(
+          ),
+          // ClipOval > Image.network / Image.asset (124x124)
+          ClipOval(
+            child: SizedBox(
+              width: 124,
+              height: 124,
               child: Image.asset(
                 ProfileData.avatarAsset,
                 fit: BoxFit.cover,
@@ -247,7 +260,7 @@ class ProfileScreen extends StatelessWidget {
                     color: const Color(0xFFE2E8F0),
                     child: const Icon(
                       Icons.person_rounded,
-                      size: 60,
+                      size: 56,
                       color: Color(0xFF94A3B8),
                     ),
                   );
@@ -255,33 +268,36 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        Positioned(
-          bottom: 6,
-          right: 6,
-          child: Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: const Color(0xFF0284C7),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2.5),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x26000000),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
+          // Positioned (Verified Badge: 28x28 | Blue #0284C7)
+          Positioned(
+            bottom: 4,
+            right: 4,
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: const Color(0xFF0284C7),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2.5),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x26000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.check_rounded,
+                  color: Colors.white,
+                  size: 16,
                 ),
-              ],
-            ),
-            child: const Icon(
-              Icons.check_rounded,
-              color: Colors.white,
-              size: 16,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -307,10 +323,11 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
+        // Container > Row (Location Pill: Radius 20 | #F1F5F9)
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFEEF2F6),
+            color: const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -337,6 +354,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // 3. Stats Card (Container > Row: Radius 20 | BoxShadow 0 8 18)
   Widget _buildStatsCard() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
@@ -347,8 +365,8 @@ class ProfileScreen extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             color: Color(0x0D000000),
-            blurRadius: 16,
-            offset: Offset(0, 4),
+            blurRadius: 18,
+            offset: Offset(0, 8),
           ),
         ],
       ),
@@ -417,6 +435,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // 4. About Me (Column)
   Widget _buildAboutMeSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +445,7 @@ class ProfileScreen extends StatelessWidget {
           child: Text(
             'About Me',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.w700,
               color: const Color(0xFF0F172A),
             ),
@@ -437,7 +456,7 @@ class ProfileScreen extends StatelessWidget {
           ProfileData.aboutMe,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            height: 1.55,
+            height: 21 / 14, // Line-height 21px
             fontWeight: FontWeight.w400,
             color: const Color(0xFF64748B),
           ),
@@ -446,6 +465,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // 5. Skills & Expertise (Column > Wrap)
   Widget _buildSkillsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,49 +475,55 @@ class ProfileScreen extends StatelessWidget {
           child: Text(
             'Skills & Expertise',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.w700,
               color: const Color(0xFF0F172A),
             ),
           ),
         ),
         const SizedBox(height: 12),
+        // Row 1 & Row 2 via Wrap / Rows
         Wrap(
-          spacing: 10,
-          runSpacing: 10,
+          spacing: 8,
+          runSpacing: 8,
           children: ProfileData.skills.map((skill) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: skill.bgColor,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    skill.icon,
-                    size: 16,
-                    color: skill.textColor,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    skill.label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: skill.textColor,
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return _buildSkillChip(skill);
           }).toList(),
         ),
       ],
     );
   }
 
+  Widget _buildSkillChip(SkillItem skill) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: skill.bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            skill.icon,
+            size: 16,
+            color: skill.textColor,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            skill.label,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: skill.textColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 6. Featured Projects (Row: 2 Expanded Cards)
   Widget _buildFeaturedProjectsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -507,94 +533,104 @@ class ProfileScreen extends StatelessWidget {
           child: Text(
             'Featured Projects',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.w700,
               color: const Color(0xFF0F172A),
             ),
           ),
         ),
         const SizedBox(height: 14),
+        // Row (Expanded Project Cards: 342px) -> Card: 165x145 | Radius 16
         Row(
-          children: ProfileData.projects.map((project) {
-            return Expanded(
-              child: Container(
-                margin: EdgeInsets.only(
-                  right: project == ProfileData.projects.last ? 0 : 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x08000000),
-                      blurRadius: 12,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 96,
-                        width: double.infinity,
-                        child: Image.asset(
-                          project.imageAsset,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: const Color(0xFFE2E8F0),
-                              child: const Icon(
-                                Icons.image_not_supported_rounded,
-                                color: Color(0xFF94A3B8),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              project.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13.5,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF0F172A),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              project.category,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF64748B),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+          children: [
+            Expanded(
+              child: _buildProjectCard(ProfileData.projects[0]),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildProjectCard(ProfileData.projects[1]),
+            ),
+          ],
         ),
       ],
     );
   }
 
+  Widget _buildProjectCard(ProjectItem project) {
+    return Container(
+      height: 145,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x08000000),
+            blurRadius: 12,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: Image.asset(
+                  project.imageAsset,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: const Color(0xFFE2E8F0),
+                      child: const Icon(
+                        Icons.image_not_supported_rounded,
+                        color: Color(0xFF94A3B8),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    project.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF0F172A),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    project.category,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 7. Contact Card (Container > Column: Radius 20 | Shadow 0 4 12)
   Widget _buildContactCard() {
     return Container(
       decoration: BoxDecoration(
@@ -604,7 +640,7 @@ class ProfileScreen extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
-            blurRadius: 16,
+            blurRadius: 12,
             offset: Offset(0, 4),
           ),
         ],
@@ -618,6 +654,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           const Divider(
             height: 1,
+            thickness: 1,
             color: Color(0xFFF1F5F9),
             indent: 16,
             endIndent: 16,
@@ -628,6 +665,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           const Divider(
             height: 1,
+            thickness: 1,
             color: Color(0xFFF1F5F9),
             indent: 16,
             endIndent: 16,
@@ -650,16 +688,17 @@ class ProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
+          // Icon Box (34x34 | Radius 10)
           Container(
-            width: 38,
-            height: 38,
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
               color: const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
-              size: 19,
+              size: 17,
               color: const Color(0xFF334155),
             ),
           ),
@@ -671,8 +710,8 @@ class ProfileScreen extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: isHeader ? FontWeight.w700 : FontWeight.w500,
                 color: isHeader
-                    ? const Color(0xFF0F172A)
-                    : const Color(0xFF334155),
+                  ? const Color(0xFF0F172A)
+                  : const Color(0xFF334155),
               ),
             ),
           ),
